@@ -14,14 +14,14 @@ var RestaurantOwner = mongoose.model('RestaurantOwner');
  * optional data: description
  */
 router.post('/', auth.required, function(req, res, next) {
-	RestaurantOwner.findById(req.user.id).then(function(restaurantOwner) {
+	RestaurantOwner.findById(req.usr.id).then(function(restaurantOwner) {
 		if (!restaurantOwner) return res.sendStatus(401);
 
 		if (!req.body.restaurant) return res.sendStatus(400);
 
 		var restaurant = new Restaurant();
 
-		restaurant.admin = req.user.id;
+		restaurant.admin = req.usr.id;
 		restaurant.name = req.body.restaurant.name;
 		restaurant.address = req.body.restaurant.address;
 		restaurant.description = req.body.restaurant.description;
@@ -38,10 +38,10 @@ router.post('/', auth.required, function(req, res, next) {
  * required data: Authentication token
  */
 router.get('/', auth.required, function(req, res, next) {
-	RestaurantOwner.findById(req.user.id).then(function(restaurantOwner) {
+	RestaurantOwner.findById(req.usr.id).then(function(restaurantOwner) {
 		if (!restaurantOwner) return res.sendStatus(401);
 
-		Restaurant.find({admin: req.user.id}).then(function(restaurants) {
+		Restaurant.find({admin: req.usr.id}).then(function(restaurants) {
 			var restauratnsDetails = [];
 			restaurants.forEach(function(restaurant) {
 				restauratnsDetails.push(restaurant.viewByOwnerJSON());
@@ -58,7 +58,7 @@ router.get('/', auth.required, function(req, res, next) {
  * optional data: name, address, description, businessHours
  */
 router.put('/', auth.required, function(req, res, next) {
-	RestaurantOwner.findById(req.user.id).then(function(restaurantOwner) {
+	RestaurantOwner.findById(req.usr.id).then(function(restaurantOwner) {
 		if (!restaurantOwner) return res.sendStatus(401);
 
 		let data = req.body.restaurant;
@@ -67,7 +67,7 @@ router.put('/', auth.required, function(req, res, next) {
 		}
 
 		Restaurant.findOne({
-			admin: req.user.id,
+			admin: req.usr.id,
 			_id: req.body.restaurant.id
 		}).then(function(restaurant) {
 			if (!restaurant) return res.sendStatus(401);

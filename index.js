@@ -19,7 +19,7 @@ app.use(express.urlencoded({
   extended: true
 }));
 
-if (config.envName === 'staging') {
+if (config.envName === 'dev') {
 	app.use(function(req, res, next) {//Get rid of this
 		console.log('\n\n\n\n');
 		console.log('headers: ', req.headers);
@@ -50,7 +50,7 @@ app.use(function(req, res, next) {
 });
 
 // Error handlers
-if (config.envName === 'staging') {
+if (config.envName === 'dev') {
 	app.use(function(err, req, res, next) {
 		console.log(err.stack);
 

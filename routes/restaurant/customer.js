@@ -18,10 +18,10 @@ router.get('/:restaurantId/customer', auth.required, function(req, res, next) {
 	var regExObjectId = /^[a-f\d]{24}$/i;
 	if (!regExObjectId.test(req.params.restaurantId)) return next();
 
-	// Authorize if user is the admin of the restaurant
+	// Authorize if usr is the admin of the restaurant
 	Restaurant.findOne({
 		_id: req.params.restaurantId,
-		admin: req.user.id
+		admin: req.usr.id
 	}).then(function(restaurant) {
 		if (!restaurant) return res.sendStatus(401);
 
@@ -44,7 +44,7 @@ router.get('/:restaurantId/customer', auth.required, function(req, res, next) {
 			}).then(function(bookings) {
 				if (!bookings.length) return res.sendStatus(401);
 
-				return res.json({customer: customer.getUserJSON()})
+				return res.json({customer: customer.getusrJSON()})
 			}).catch(next);
 		}).catch(next);
 	}).catch(next);

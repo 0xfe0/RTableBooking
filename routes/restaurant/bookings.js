@@ -22,10 +22,10 @@ router.get('/:restaurantId', auth.required, function(req, res, next) {
 	var regExObjectId = /^[a-f\d]{24}$/i;
 	if (!regExObjectId.test(req.params.restaurantId)) return next();
 
-	// Authorize if user is the admin of the restaurant
+	// Authorize if usr is the admin of the restaurant
 	Restaurant.findOne({
 		_id: req.params.restaurantId,
-		admin: req.user.id
+		admin: req.usr.id
 	}).then(async function(restaurant) {
 		if (!restaurant) throwError.unauthorized();
 
@@ -82,7 +82,7 @@ router.get('/:restaurantId', auth.required, function(req, res, next) {
 		// Default sort
 		let sort = [];
 
-		// Validate userdata for sorting
+		// Validate usrdata for sorting
 		if (typeof(req.query.sortby) == 'object' && req.query.sortby instanceof Array) {
 			req.query.sortby.forEach(function(pair) {
 				if (typeof(pair) == 'object' && pair instanceof Array) {

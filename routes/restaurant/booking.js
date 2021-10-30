@@ -25,10 +25,10 @@ router.get('/:restaurantId/:bookingId', auth.required, function(req, res, next) 
 	if (!regExObjectId.test(req.params.restaurantId)) return next();
 	if (!regExObjectId.test(req.params.bookingId)) return next();
 
-	// Authorize if user is the admin of the restaurant
+	// Authorize if usr is the admin of the restaurant
 	Restaurant.findOne({
 		_id: req.params.restaurantId,
-		admin: req.user.id
+		admin: req.usr.id
 	}).then(function(restaurant) {
 		if (!restaurant) res.sendStatus(401);
 
@@ -56,10 +56,10 @@ router.put('/:restaurantId/:bookingId', auth.required, function(req, res, next) 
 	if (!regExObjectId.test(req.params.restaurantId)) return next();
 	if (!regExObjectId.test(req.params.bookingId)) return next();
 
-	// Authorize if user is the admin of the restaurant
+	// Authorize if usr is the admin of the restaurant
 	Restaurant.findOne({
 		_id: req.params.restaurantId,
-		admin: req.user.id
+		admin: req.usr.id
 	}).then(function(restaurant) {
 		if (!restaurant) res.sendStatus(401);
 
@@ -137,9 +137,9 @@ router.put('/:restaurantId/:bookingId', auth.required, function(req, res, next) 
 /* 
  * Create new booking
  * permission - restaurant owner
- * required data - Authentication token, user: {phone}, booking: {bookingFrom, noOfPersons}
+ * required data - Authentication token, usr: {phone}, booking: {bookingFrom, noOfPersons}
  * optional data
- *	-	user: {name, email} (optional data required in case of new customer)
+ *	-	usr: {name, email} (optional data required in case of new customer)
  *	-	table (type: ObjectId)
  */ 
 router.post('/:restaurantId', auth.required, function(req, res, next) {
@@ -148,23 +148,23 @@ router.post('/:restaurantId', auth.required, function(req, res, next) {
 	var regExObjectId = /^[a-f\d]{24}$/i;
 	if (!regExObjectId.test(req.params.restaurantId)) return next();
 
-	// Authorize if user is the admin of the restaurant
+	// Authorize if usr is the admin of the restaurant
 	Restaurant.findOne({
 		_id: req.params.restaurantId,
-		admin: req.user.id
+		admin: req.usr.id
 	}).then(function(restaurant) {
 		if (!restaurant) res.sendStatus(401);
 
 		// Obtain customer id by phone or email
 		let customerQuery = {};
-		if (req.body.user && req.body.user.phone) customerQuery.phone = req.body.user.phone;
-		else if (req.body.user && req.body.user.email) customerQuery.email = req.body.user.email;
+		if (req.body.usr && req.body.usr.phone) customerQuery.phone = req.body.usr.phone;
+		else if (req.body.usr && req.body.usr.email) customerQuery.email = req.body.usr.email;
 		else throwError.validationError('Kindly provide phone number or email');
 
 		console.log(customerQuery);
 		Customer.findOne(customerQuery).then(function(customer) {
 			// If phone or email is not present in customer database
-			if (!customer) throwError.userNotFound();
+			if (!customer) throwError.usrNotFound();
 
 			let payload = req.body.booking;
 
@@ -244,10 +244,10 @@ router.put('/:restaurantId/:bookingId/status', auth.required, function(req, res,
 	if (!regExObjectId.test(req.params.restaurantId)) return next();
 	if (!regExObjectId.test(req.params.bookingId)) return next();
 
-	// Authorize if user is the admin of the restaurant
+	// Authorize if usr is the admin of the restaurant
 	Restaurant.findOne({
 		_id: req.params.restaurantId,
-		admin: req.user.id
+		admin: req.usr.id
 	}).then(function(restaurant) {
 		if (!restaurant) res.sendStatus(401);
 

@@ -17,14 +17,14 @@ router.post('/:restaurantId', auth.required, function(req, res, next) {
 	var regExObjectId = /^[a-f\d]{24}$/i;
 	if (!regExObjectId.test(req.params.restaurantId)) return next();
 
-	RestaurantOwner.findById(req.user.id).then(function(restaurantOwner) {
+	RestaurantOwner.findById(req.usr.id).then(function(restaurantOwner) {
 		if (!restaurantOwner) return res.sendStatus(401);
 
 		if (!req.body.tables || !(req.body.tables instanceof Array))
 			return res.sendStatus(400);
 
 		Restaurant.findOne({
-			admin: req.user.id,
+			admin: req.usr.id,
 			_id: req.params.restaurantId
 		}).then(function(restaurant) {
 			if (!restaurant) return res.sendStatus(401);
@@ -69,7 +69,7 @@ router.post('/:restaurantId', auth.required, function(req, res, next) {
  * optional data: tableIdentifier, capacity, description
  */
 router.put('/', auth.required, function(req, res, next) {
-	RestaurantOwner.findById(req.user.id).then(function(restaurantOwner) {
+	RestaurantOwner.findById(req.usr.id).then(function(restaurantOwner) {
 		if (!restaurantOwner) return res.sendStatus(401);
 
 		let data = req.body.table;
@@ -80,10 +80,10 @@ router.put('/', auth.required, function(req, res, next) {
 		Table.findById(data.id).then(function(table) {
 			if (!table) return res.sendStatus(401);
 
-			// check the table belongs to a restaurant and user is admin
+			// check the table belongs to a restaurant and usr is admin
 			Restaurant.findOne({
 				_id: table.restaurant,
-				admin: req.user.id
+				admin: req.usr.id
 			}).then(function(restaurant) {
 				if (!restaurant) return res.sendStatus(401);
 
@@ -108,9 +108,9 @@ router.put('/', auth.required, function(req, res, next) {
  */
 //TODO restrict acess
 router.get('/:restaurantId/:tableId', auth.required, function(req, res, next) {
-	// Check user is admin of the restaurant or not
+	// Check usr is admin of the restaurant or not
 	Restaurant.findOne({
-		admin: req.user.id,
+		admin: req.usr.id,
 		_id: req.params.restaurantId
 	}).then(function(restaurant) {
 		if (!restaurant) return res.sendStatus(401);

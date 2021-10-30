@@ -56,7 +56,7 @@ RestaurantOwnerSchema.methods.generateJWT = function() {
 
 	return jwt.sign({
 		id: this._id,
-		username: this.username,
+		usrname: this.usrname,
 		exp: parseInt(exp.getTime() / 1000),
 	}, secret);
 };
@@ -70,7 +70,7 @@ RestaurantOwnerSchema.methods.toAuthJSON = function() {
 	};
 };
 
-RestaurantOwnerSchema.methods.getUserJSON = function() { return {
+RestaurantOwnerSchema.methods.getusrJSON = function() { return {
 		firstName: this.firstName,
 		lastName: this.lastName,
 		email: this.email,

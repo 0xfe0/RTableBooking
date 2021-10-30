@@ -2,13 +2,13 @@
  * General configuration for RTableBooking
  */
 
-// Container for all the environments
-var environments = {};
+// Container for all the envs
+var envs = {};
 
-// Staging (default) environments
-environments.staging = {
+// dev (default) envs
+envs.dev = {
 	'port' : 3000,
-	'envName' : 'staging',
+	'envName' : 'dev',
 	'secret' : 'JWTLONGSECRET',
 	'mongodb' : {
 		'URL' : 'mongodb://localhost:27017/',
@@ -20,8 +20,8 @@ environments.staging = {
 	'default_booking_duration': 0100 // HHMM format
 };
 
-// Production environments
-environments.production = {
+// Production envs
+envs.production = {
 	'port' : 5000,
 	'envName' : 'production',
 	'secret' : process.env.JWT_SECRET || 'JWTLONGSECRET',
@@ -36,16 +36,16 @@ environments.production = {
 };
 
 // Check command-line arguments for environment
-var currentEnvironment =
+var curEnv =
 	typeof(process.env.NODE_ENV) == 'string'
 	? process.env.NODE_ENV.toLowerCase()
 	: '';
 
-// Check currentEnvironment is defined
-var environmentToExport =
-	typeof(environments[currentEnvironment]) == 'object'
-	? environments[currentEnvironment]
-	: environments.staging;
+// Check curEnv is defined
+var envToExport =
+	typeof(envs[curEnv]) == 'object'
+	? envs[curEnv]
+	: envs.dev;
 
 // Export the module
-module.exports = environmentToExport;
+module.exports = envToExport;

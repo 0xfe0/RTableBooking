@@ -48,7 +48,7 @@ CustomerSchema.methods.generateJWT = function() {
 
 	return jwt.sign({
 		id: this._id,
-		username: this.username,
+		usrname: this.usrname,
 		exp: parseInt(exp.getTime() / 1000),
 	}, secret);
 };
@@ -61,7 +61,7 @@ CustomerSchema.methods.toAuthJSON = function() {
 	};
 };
 
-CustomerSchema.methods.getUserJSON = function() { return {
+CustomerSchema.methods.getusrJSON = function() { return {
 		name: this.name,
 		email: this.email,
 		phone: this.phone

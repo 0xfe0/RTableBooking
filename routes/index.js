@@ -4,8 +4,8 @@ router.get('/ping', function(req, res, next){
     return res.status(200).send('Hello');
 });
 
-// user signup, login, view user data, modify user data
-router.use('/user', require('./user'));
+// usr signup, login, view usr data, modify usr data
+router.use('/usr', require('./usr'));
 
 // Restaurant releted operations 
 router.use('/restaurant', require('./restaurant/'));

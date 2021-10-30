@@ -17,7 +17,7 @@ var Restaurant = mongoose.model('Restaurant');
  * Required data: token, restaurant, noOfPersons, bookingFrom
  */
 router.post('/', auth.required, function(req, res, next) {
-	Customer.findById(req.user.id).then(function(customer) {
+	Customer.findById(req.usr.id).then(function(customer) {
 		if (!customer) return res.sendStatus(401);
 
 		if (!req.body.booking) return res.sendStatus(400);
@@ -92,7 +92,7 @@ router.post('/', auth.required, function(req, res, next) {
 						// Update database
 						var booking = new Booking;
 
-						booking.customer = req.user.id;
+						booking.customer = req.usr.id;
 						booking.restaurant = payload.restaurant;
 						booking.noOfPersons = payload.noOfPersons;
 						booking.bookingFrom = payload.bookingFrom;
@@ -114,11 +114,11 @@ router.post('/', auth.required, function(req, res, next) {
  * Required data: Authentication token for customer
  */
 router.get('/', auth.required, function(req, res, next) {
-	Customer.findById(req.user.id).then(function(customer) {
+	Customer.findById(req.usr.id).then(function(customer) {
 		if (!customer) return res.sendStatus(401);
 
 		// Get booking data of the customer
-		Booking.find({customer: req.user.id})
+		Booking.find({customer: req.usr.id})
 		.populate('restaurant', 'name')
 		.then(function(bookings) {
 			var bookingList = [];
@@ -140,13 +140,13 @@ router.get('/:bookingId', auth.required, function(req, res, next) {
 	var regExObjectId = /^[a-f\d]{24}$/i;
 	if (!regExObjectId.test(req.params.bookingId)) return next();
 
-	Customer.findById(req.user.id).then(function(customer) {
+	Customer.findById(req.usr.id).then(function(customer) {
 		if (!customer) return res.sendStatus(401);
 
 		// Get booking data of the customer
 		Booking.findById({
 			_id: req.params.bookingId,
-			customer: req.user.id
+			customer: req.usr.id
 		}).then(function(booking) {
 			if (!booking) return res.sendStatus(401);
 

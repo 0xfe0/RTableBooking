@@ -18,9 +18,9 @@ var Restaurant = mongoose.model('Restaurant');
  */
 //TODO restrict acess
 router.get('/:restaurantId', auth.required, function(req, res, next) {
-	// Check user is admin of the restaurant or not
+	// Check usr is admin of the restaurant or not
 	Restaurant.findOne({
-		admin: req.user.id,
+		admin: req.usr.id,
 		_id: req.params.restaurantId
 	}).then(function(restaurant) {
 		if (!restaurant) return res.sendStatus(401);

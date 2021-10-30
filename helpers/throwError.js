@@ -14,10 +14,10 @@ throwError.unauthorized = function(msg) {
 	throw err;
 };
 
-throwError.userNotFound = function(msg) {
-	msg = msg ? msg : 'User not found';
+throwError.usrNotFound = function(msg) {
+	msg = msg ? msg : 'usr not found';
 	var err = new Error(msg);
-	err.name = 'User not found';
+	err.name = 'usr not found';
 	err.status = 406;
 	throw err;
 };
