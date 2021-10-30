@@ -1,0 +1,85 @@
+// RTable Dependencies
+var express = require('express');
+var	mongoose = require('mongoose');
+
+//Configuration
+var config = require('./config');
+
+var app = express();
+
+// Middlewares
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Authorization, Accept");
+  res.header("Access-Control-Allow-methods", "POST, GET, PUT, DELETE");
+  next();
+});
+app.use(express.json());
+app.use(express.urlencoded({
+  extended: true
+}));
+
+if (config.envName === 'staging') {
+	app.use(function(req, res, next) {//Get rid of this
+		console.log('\n\n\n\n');
+		console.log('headers: ', req.headers);
+		console.log('body = ', req.body);
+		next();
+	});
+}
+
+// Connect database
+mongoose.connect(config.mongodb.URL, config.mongodb.option)
+.then(function() {
+	console.log('\x1b[32m%s\x1b[0m', 'Database Connection Established!');
+	app.emit('databaseReady');
+})
+.catch(function(err) {
+	console.log('\x1b[31m%s\x1b[0m', 'Error in Database Connection!');
+	console.log(err);
+});
+
+// API endpoints
+app.use(require('./routes'));
+
+// Catch 404 and forward to error handler
+app.use(function(req, res, next) {
+	var err = new Error('Not found');
+	err.status = 404;
+	next(err);
+});
+
+// Error handlers
+if (config.envName === 'staging') {
+	app.use(function(err, req, res, next) {
+		console.log(err.stack);
+
+		res.status(err.status || ((err.name == 'ValidationError') ? 400 : 500));
+		res.json({
+			'errors': {
+				message: err.message,
+				error: err
+			}
+		});
+	});
+} else {
+	app.use(function(err, req, res, next) {
+		res.status(err.status || (err.name == 'ValidationError') ? 400 : 500);
+		res.json({
+			'errors': {
+				'message': err.message,
+				'error':{}
+			}
+		});
+	});
+}
+
+// Start the server when database ready
+app.on('databaseReady', function() {
+	var server = app.listen(config.port, function(err, a) {
+		console.log('\x1b[32m%s\x1b[0m', 'Listening on port ' + server.address().port + ' in ' + config.envName + ' mode');
+	}).on('error',function(err){
+		console.log('\x1b[31m%s\x1b[0m', 'Error occured while creating server');
+		console.log(err);
+	});
+});
